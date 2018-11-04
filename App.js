@@ -1,58 +1,126 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
 
 import React, { Component } from 'react';
 import {
-  Platform,
-  StyleSheet,
-  Text,
-  View
+    Text,
+    View,
+    Image,
+    StyleSheet,
+
 } from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+export default class App extends Component {
 
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
-    );
-  }
+    constructor(props) {
+        super(props);
+        this.state = {n: 0, botao: 'Start'};
+        this.timer = null;
+
+        this.start = this.start.bind(this);
+        this.reset = this.reset.bind(this);
+    }
+
+    start() {
+        let s = this.state;
+
+        if(this.timer != null) {
+            // Parar o timer
+            clearInterval(this.timer);
+            this.timer = null;
+            s.botao = "Start";
+
+        } else {
+            // Começar o timer
+            this.timer = setInterval(()=> {
+                let s = this.state;
+                s.n += -.1;
+                this.setState(s);
+            }, 100);
+
+            s.botao = "Stop";
+        }
+
+        this.setState(s); 
+    }
+
+    reset() {
+        if(this.timer != null) {
+            // Parar o timer
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+
+        let s = this.state;
+        s.n = 0;
+        this.setState(s);
+    }
+    
+    render() {
+        return (
+           
+            <View style = {styles.body}>
+                
+                <Image source = {require('./images/relogio.png')} />
+                <Text style = {styles.timer}>{this.state.n.toFixed(1)}</Text>
+                
+                <View style ={styles.botaoArea}>
+
+                    <TouchableOpacity style = {styles.botao} onPress = {this.start}>
+
+                        <Text style = {styles.botaoText}>{this.state.botao}</Text>
+
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style = {styles.botao} onPress = {this.reset}>
+
+                        <Text style = {styles.botaoText}>Reset</Text>
+
+                    </TouchableOpacity>
+
+                </View>
+
+            </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+
+    body: {
+        paddingTop: 20,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#2c1f30',
+    },
+
+    timer: {
+        color: '#baa07a',
+        fontSize: 70,
+        fontWeight: 'bold',
+        backgroundColor: 'transparent',
+        marginTop: -150,
+    },
+
+    botaoArea: {
+        flexDirection: 'row',
+        height: 40,
+        marginTop: 80,
+    },
+
+    botao: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#886532',
+        height: 40,
+        boerderRadius: 5,
+        margin: 10,
+    },
+
+    botaoText: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+    },
+
 });
